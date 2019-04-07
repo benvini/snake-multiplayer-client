@@ -10,13 +10,13 @@ class Users {
   }
 
   isUserExists(userId) {
-    let isExist = false;
+    let isExists = false;
     for (let i = 0; i < this.users.length; i++) {
       if (this.users[i].id === userId) {
-        isExist = true;
+        isExists = true;
       }
     }
-    return isExist;
+    return isExists;
   }
 
   updateUser(user) {

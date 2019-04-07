@@ -14,53 +14,89 @@ const StyledRow = styled.div`
 const StyledColumn = styled.div`
     display: flex;
     flex-direction: column;
-    min-width: 16px;
-    min-height: 16px;
     background-color: ${props => boardColorSelector(props)};
     border: ${({ helpedMode }) => helpedMode ? '1px solid black' : '1px solid white'};
+   
+    @media (max-width: 1375px) {
+      min-width: 16px;
+      min-height: 16px;
+    }
+    @media (max-width: 950px) {
+      min-width: 15px;
+      min-height: 15px;
+    }
+    @media (max-width: 895px) {
+      min-width: 13px;
+      min-height: 13px;
+    }
+    @media (max-width: 798px) {
+      min-width: 12px;
+      min-height: 12px;
+    }
+    @media (max-width: 755px) {
+      min-width: 10px;
+      min-height: 10px;
+    } 
+    @media (max-width: 644px) {
+      min-width: 9px;
+      min-height: 9px;
+    } 
+    @media (max-width: 592px) {
+      min-width: 8px;
+      min-height: 8px;
+    } 
+    @media (max-width: 571px) {
+      min-width: 7px;
+      min-height: 7px;
+    } 
+    @media (max-width: 480px) {
+      min-width: 6px;
+      min-height: 6px;
+    } 
+    @media (max-width: 460px) {
+      min-width: 5px;
+      min-height: 5px;
+    } 
 `;
 
-const boardColorSelector = ({ counter, snake, food, snakeBodyElem, enemySnake, enemySnakeBodyElem }) => {
-  const isSnakeHead = snake && snake.head.data === counter;
-  const isSnakeBody = snakeBodyElem;
-  const isFood = food && food === counter;
-  const isEnemySnakeHead = enemySnake && enemySnake.head.data === counter;
-  const isEnemySnakeBody = enemySnakeBodyElem;
+const boardColorSelector = ({ counter, snake, apple, snakeBodyElem, enemySnake, enemySnakeBodyElem }) => {
+  const isSnakeHead = snake && snake[0] === counter;
+  const isApple = apple && apple === counter;
+  const isEnemySnakeHead = enemySnake && enemySnake[0] === counter;
 
   if (isSnakeHead) {
     return 'green';
   }
-  if (isSnakeBody) {
+  if (snakeBodyElem) {
     return 'yellow';
   }
   if (isEnemySnakeHead) {
     return 'orange';
   }
-  if (isEnemySnakeBody) {
+  if (enemySnakeBodyElem) {
     return 'blue';
   }
-  if (isFood) {
+  if (isApple) {
     return 'red';
   }
   return 'white';
 }
 
-const isCellOnSnakeBody = ({ counter, snake }) => {
+const isCellOnSnakeBody = (counter, userSnake) => {
   let isSnakeContainCell = false;
-  if (snake) {
-    let currentSnakeNode = snake.head;
-    currentSnakeNode = currentSnakeNode.next;
-    while (currentSnakeNode) {
-      if (counter === currentSnakeNode.data) {
+  if (userSnake) {
+    for (let i = 1; i < userSnake.length; i++) {
+      if (userSnake[i] === counter) {
         isSnakeContainCell = true;
+        break;
       }
-      currentSnakeNode = currentSnakeNode.next;
     }
   }
+
   return isSnakeContainCell;
 }
 
-const renderTable = ({ snake, food, helpedMode, enemySnake }) => {
+const renderTable = ({ snake, apple, helpedMode, enemySnake }) => {
   let rows = [];
   let counter = 0;
   let snakeBodyElem = false;
@@ -69,13 +105,13 @@ const renderTable = ({ snake, food, helpedMode, enemySnake }) => {
     let cell = [];
     for (let j = 0; j < BOARD_WIDTH; j++) {
       let cellId = `cell ${i}-${j}`;
-      snakeBodyElem = isCellOnSnakeBody({ counter, snake });
-      enemySnakeBodyElem = isCellOnSnakeBody({ counter, enemySnake });
+      snakeBodyElem = isCellOnSnakeBody(counter, snake);
+      enemySnakeBodyElem = isCellOnSnakeBody(counter, enemySnake);
       cell.push(<StyledColumn
         helpedMode={helpedMode}
         key={cellId}
         counter={counter}
-        food={food}
+        apple={apple}
         snake={snake}
         enemySnake={enemySnake}
         enemySnakeBodyElem={enemySnakeBodyElem}
@@ -88,9 +124,9 @@ const renderTable = ({ snake, food, helpedMode, enemySnake }) => {
   return rows;
 }
 
-const Board = ({ snake, food, helpedMode, enemySnake }) => (
+const Board = ({ snake, apple, helpedMode, enemySnake }) => (
   <Table>
-    {renderTable({ snake, food, helpedMode, enemySnake })}
+    {renderTable({ snake, apple, helpedMode, enemySnake })}
   </Table>
 );
 

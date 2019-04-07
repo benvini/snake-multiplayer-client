@@ -1,25 +1,17 @@
 import openSocket from 'socket.io-client';
 import { ENDPOINT } from '../config';
-import LinkedList from '../utils/LinkedList';
 const socket = openSocket(ENDPOINT);
 
-const listenFoodEvents = (callback) => {
-    socket.on('getFood', food => {
-        callback(food);
+const listenAppleEvents = (callback) => {
+    socket.on('newApple', apple => {
+        callback(apple);
     })
 };
 
-const listenEnemyPositionEvent = (callback) => {
-    socket.on('enemyPosition', user => {
-        const enemySnake = new LinkedList();
-        let currentEnemySnakeNode = user.head;
-        while (currentEnemySnakeNode) {
-            enemySnake.addLast(currentEnemySnakeNode.data);
-            currentEnemySnakeNode = currentEnemySnakeNode.next;
-        }
-        callback(enemySnake);
-    });
-}
+const listenEnemyDeadEvents = (callback) => {
+    socket.on('enemyDead', user => {
+        callback(user.snake);
+    })
+};
 
-
-export { listenFoodEvents, listenEnemyPositionEvent };
+export { listenAppleEvents, listenEnemyDeadEvents };
