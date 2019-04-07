@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Board from "../components/Board";
 import socketIOClient from "socket.io-client";
-import Helpers from '../utils/helpers';
+import Helpers from "../utils/helpers";
 import { listenAppleEvents, listenEnemyDeadEvents } from "../api";
 import {
   BOARD_WIDTH,
@@ -33,91 +33,91 @@ const Score = styled.label`
   margin-bottom: 8px;
   @media (max-width: 644px) {
     font-size: 11px;
-    } 
-    @media (max-width: 571px) {
-      font-size: 10px;
-    } 
-    @media (max-width: 480px) {
-      font-size: 9px;
-    } 
+  }
+  @media (max-width: 571px) {
+    font-size: 10px;
+  }
+  @media (max-width: 480px) {
+    font-size: 9px;
+  }
 `;
 
 const StyledScore = styled.div`
   display: flex;
-`
+`;
 
 const Button = styled.button`
-    margin-bottom: 12px;
-    position: relative;
-    outline: none;
-    background-color: #f39c12;
-    border: none;
-    border-radius: 16px;
-    padding: 12px;
-    width: 100px;
-    cursor: pointer;
-    text-align: center;
-    transition-duration: 0.4s;
-    text-decoration: none;
-    overflow: hidden;
-    display:block;
-    :hover{
-    background:#fff;
-    box-shadow:0px 2px 10px 5px #97B1BF;
-    color:#000;
-    }
-    :after {
-        content: "";
-        background: #f1c40f;
-        display: block;
-        position: absolute;
-        padding-top: 300%;
-        padding-left: 350%;
-        margin-left: -20px !important;
-        margin-top: -120%;
-        opacity: 0;
-        transition: all 0.8s
-    }
-        :active:after {
-        padding: 0;
-        margin: 0;
-        opacity: 1;
-        transition: 0s
-    }
+  margin-bottom: 12px;
+  position: relative;
+  outline: none;
+  background-color: #f39c12;
+  border: none;
+  border-radius: 16px;
+  padding: 12px;
+  width: 100px;
+  cursor: pointer;
+  text-align: center;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  display: block;
+  :hover {
+    background: #fff;
+    box-shadow: 0px 2px 10px 5px #97b1bf;
+    color: #000;
+  }
+  :after {
+    content: "";
+    background: #f1c40f;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s;
+  }
+  :active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s;
+  }
 
-    @media (max-width: 644px) {
-      font-size: 12px;
-      width: 95px
-    } 
-    @media (max-width: 609px) {
-      font-size: 10px;
-      width: 85px    
-    } 
-    @media (max-width: 571px) {
-      font-size: 9px;
-      width: 82px
-    } 
-    @media (max-width: 480px) {
-      font-size: 8px;
-      width: 80px
-    } 
+  @media (max-width: 644px) {
+    font-size: 12px;
+    width: 95px;
+  }
+  @media (max-width: 609px) {
+    font-size: 10px;
+    width: 85px;
+  }
+  @media (max-width: 571px) {
+    font-size: 9px;
+    width: 82px;
+  }
+  @media (max-width: 480px) {
+    font-size: 8px;
+    width: 80px;
+  }
 `;
 
 const Title = styled.h1`
   display: flex;
 
-    @media only screen and (max-width: 962px) {   
-      font-size: 28px;
-    }
-    @media only screen and (max-width: 740px) {   
-      font-size: 20px;
-    }
-    @media only screen and (max-width: 550px) {   
-      font-size: 16px;
-    }
-    @media only screen and (max-width: 430px) {   
-      font-size: 9px;
-    }
+  @media only screen and (max-width: 962px) {
+    font-size: 28px;
+  }
+  @media only screen and (max-width: 740px) {
+    font-size: 20px;
+  }
+  @media only screen and (max-width: 550px) {
+    font-size: 16px;
+  }
+  @media only screen and (max-width: 430px) {
+    font-size: 9px;
+  }
 `;
 
 const socket = socketIOClient(ENDPOINT);
@@ -143,16 +143,16 @@ class Home extends Component {
     listenEnemyDeadEvents(enemySnake => {
       this.restartGame(enemySnake);
       this.setState({ enemySnake });
-    })
+    });
 
     const initialSnake = Helpers.createSnake();
     this.setState({ snake: initialSnake });
 
-    socket.on('newSnake', snake => {
+    socket.on("newSnake", snake => {
       this.setState({ snake });
-    })
+    });
 
-    socket.on('enemyPosition', user => {
+    socket.on("enemyPosition", user => {
       this.setState({ enemySnake: user.snake });
     });
   }
@@ -182,15 +182,15 @@ class Home extends Component {
     }
 
     return isHitSnake;
-  }
+  };
 
   movement = currentDirection => {
+    let { speed } = this.state;
+    const { snake, enemySnake } = this.state;
+
     if (currentDirection + this.state.lastDirection === 0) {
       return;
     }
-
-    let { speed } = this.state;
-    const { snake, enemySnake } = this.state;
     clearInterval(this.loopMovement);
     this.loopMovement = setInterval(() => {
       const currentSnakeTail = snake[snake.length - 1];
@@ -219,12 +219,11 @@ class Home extends Component {
         socket.emit("getApple");
       }
 
-      //check snake Hit 
       if (snake[0] === enemySnake[0] ||
         this.isHeadHitSnake(snake[0], enemySnake) ||
         this.isHeadHitSnake(snake[0], snake)) {
         clearInterval(this.loopMovement);
-        socket.emit('dead', {
+        socket.emit("dead", {
           id: socket.id,
           snake
         });
@@ -243,7 +242,7 @@ class Home extends Component {
     }, this.state.speed);
   };
 
-  restartGame = (enemySnake) => {
+  restartGame = enemySnake => {
     socket.emit("getApple");
     socket.emit("getSnake");
     this.setState({
@@ -251,25 +250,25 @@ class Home extends Component {
       speed: INITIAL_SPEED,
       helpedMode: false,
       lastDirection: 0,
-      helpBtnText: "Help",
+      helpBtnText: "Help"
     });
-  }
+  };
 
   onKeyPressed = event => {
     switch (event.keyCode) {
-      case LEFT_ARROW_KEY_CODE: //left
+      case LEFT_ARROW_KEY_CODE:
         this.movement(DIRECTION.LEFT);
         break;
-      case UP_ARROW_KEY_CODE: //up
-        this.movement(DIRECTION.UP); // -table_width
+      case UP_ARROW_KEY_CODE:
+        this.movement(DIRECTION.UP);
         break;
-      case RIGHT_ARROW_KEY_CODE: //right
+      case RIGHT_ARROW_KEY_CODE:
         this.movement(DIRECTION.RIGHT);
         break;
-      case DOWN_ARROW_KEY_CODE: //down
-        this.movement(DIRECTION.DOWN); // +table_width
+      case DOWN_ARROW_KEY_CODE:
+        this.movement(DIRECTION.DOWN);
         break;
-      case P_KEY_CODE: //p
+      case P_KEY_CODE:
         if (this.loopMovement) {
           clearInterval(this.loopMovement);
           this.loopMovement = false;
@@ -282,18 +281,23 @@ class Home extends Component {
     }
   };
 
-  calcScore = (snake) => {
+  calcScore = snake => {
     let score = (snake && snake.length - INITIAL_SNAKE_LEN) || 0;
-    if (score < 0) { score = 0; }
+    if (score < 0) {
+      score = 0;
+    }
 
-    return score
-  }
+    return score;
+  };
 
   render() {
     let score = this.calcScore(this.state.snake);
     let enemyScore = this.calcScore(this.state.enemySnake);
     return (
-      <Container tabIndex="0" onKeyDown={this.onKeyPressed} ref={(c) => { this.div = c; }}>
+      <Container
+        tabIndex="0"
+        onKeyDown={this.onKeyPressed}
+        ref={c => { this.div = c; }} >
         <Title>Welcome To The Snake Game!</Title>
         <Button onClick={this.helpBtnClickHandler}>
           {this.state.helpBtnText}
@@ -306,8 +310,7 @@ class Home extends Component {
           helpedMode={this.state.helpedMode}
           snake={this.state.snake}
           enemySnake={this.state.enemySnake}
-          apple={this.state.apple}
-        />
+          apple={this.state.apple} />
       </Container>
     );
   }
